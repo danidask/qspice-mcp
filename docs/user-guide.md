@@ -209,6 +209,13 @@ resources active on your install.
 
 Full tool list: [Tool reference](tool_reference.md).
 
+`generate_netlist` uses the clean-room parser for supported schematics and falls
+back to native `QUX.exe -Netlist` when that parser rejects a schematic. DLL/C-block
+schematics prefer QUX from the start. Configure `QSPICE_EXE` with `QUX.exe` beside
+it for examples such as the UCC3802 boost converter; if generation fails, the
+response includes the parser and backend diagnostics. An existing, current sibling
+`.cir` or `.net` may be reused instead of regenerating the schematic.
+
 ---
 
 ## Architecture (concepts)

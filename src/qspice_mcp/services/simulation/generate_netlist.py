@@ -157,7 +157,6 @@ def _generate_netlist_with_editor_backend(
     if editor_factory is None or backend_name is None:
         raise BackendUnavailableError(
             "No derived .net or .cir exists for this schematic, and no compatible local "
-            "QschEditor backend "
             "QschEditor backend is installed for editor-driven generation."
         )
 
@@ -168,7 +167,8 @@ def _generate_netlist_with_editor_backend(
     except Exception as exc:
         raise QSpiceError(
             f"Failed to generate a derived netlist from {schematic_path.name} "
-            f"using {backend_name}.QschEditor."
+            f"using {backend_name}.QschEditor: {type(exc).__name__}: {exc}",
+            error_code=exc.error_code if isinstance(exc, QSpiceError) else None,
         ) from exc
 
     if not destination.is_file():
@@ -254,7 +254,6 @@ def _regenerate_schematic_netlist(
         if qux_generated is not None:
             return qux_generated
 
-    clean_room_error: QSpiceError | None = None
     try:
         return _generate_netlist_with_clean_room_parser(
             schematic_path,
@@ -264,15 +263,35 @@ def _regenerate_schematic_netlist(
     except QSpiceError as exc:
         clean_room_error = exc
 
+    # DLL schematics already attempted QUX above. Other unsupported schematics
+    # also need native generation, including external hierarchy and symbol formats
+    # outside the parser's supported subset.
+    if not dll_refs:
+        try:
+            qux_generated = _try_generate_netlist_with_qux(
+                schematic_path,
+                destination,
+                settings=settings,
+            )
+        except QSpiceError as exc:
+            raise QSpiceError(
+                f"The clean-room parser could not regenerate {schematic_path.name} "
+                f"({clean_room_error}); native QUX.exe netlist generation failed "
+                f"({type(exc).__name__}: {exc}).",
+                error_code=exc.error_code,
+            ) from exc
+        if qux_generated is not None:
+            return qux_generated
+
     try:
         return _generate_netlist_with_editor_backend(schematic_path, destination)
-    except BackendUnavailableError as exc:
-        if clean_room_error is None:
-            raise
+    except QSpiceError as exc:
         raise QSpiceError(
-            "The supported clean-room parser could not regenerate the schematic "
-            f"({clean_room_error}), and no compatible local QschEditor backend is installed "
-            "for editor-driven generation."
+            f"The clean-room parser could not regenerate {schematic_path.name} "
+            f"({clean_room_error}); QUX.exe is unavailable; editor-driven generation "
+            f"also failed ({exc}). Configure QSpice with companion QUX.exe for native "
+            "netlist generation, or supply a derived .cir or .net artifact.",
+            error_code=exc.error_code,
         ) from exc
 
 

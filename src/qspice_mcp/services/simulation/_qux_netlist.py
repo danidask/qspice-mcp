@@ -1,4 +1,4 @@
-"""QUX companion netlist generation for DLL-bearing schematics."""
+"""QUX companion netlist generation for schematics requiring native support."""
 
 from __future__ import annotations
 
