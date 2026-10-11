@@ -35,7 +35,7 @@ Base install is enough for MCP usage with the supported clean-room schematic sub
 
 ## Connect an MCP client
 
-**Easiest path (AI-assisted):** open **[AGENTS.md](../AGENTS.md)** and run `scripts/setup_mcp.ps1`. That merges `qspice` into **user-level** MCP config (Cursor: `%USERPROFILE%\.cursor\mcp.json`; VS Code: `%APPDATA%\Code\User\mcp.json`) and runs a sanity check. JSON templates are in AGENTS.md.
+**Easiest path (AI-assisted):** open **[AGENTS.md](../AGENTS.md)** and run `scripts/setup_mcp.ps1`. That merges `qspice` into **user-level** MCP config and runs a sanity check. The default remains Cursor + VS Code; use `-Clients ChatGPT` for ChatGPT desktop. JSON and TOML templates are in AGENTS.md.
 
 **First-time order:**
 
@@ -44,6 +44,23 @@ Base install is enough for MCP usage with the supported clean-room schematic sub
 3. Set `QSPICE_EXE` in the server environment.
 4. Restart the client.
 5. Ask the AI to call `describe_server_capabilities` before edits or simulations.
+
+### ChatGPT desktop — `%USERPROFILE%\.codex\config.toml`
+
+From the cloned repo root:
+
+```powershell
+pwsh -ExecutionPolicy Bypass -File .\scripts\setup_mcp.ps1 -Clients ChatGPT -WorkspaceRoot "D:\circuits" -QspiceExe "D:\Program Files\QSPICE\QSPICE64.exe"
+pwsh -ExecutionPolicy Bypass -File .\scripts\verify_mcp.ps1 -Clients ChatGPT
+```
+
+Setup installs the `[setup]` extra for TOML editing and merges `[mcp_servers.qspice]` into the app's shared Codex configuration, preserving unrelated settings, servers, and comments. If `CODEX_HOME` is set, its `config.toml` is used instead. No separate Codex CLI installation is needed.
+
+This setup requires **Settings → Agent environment → Windows native**; restart the app after changing it. A WSL agent cannot directly launch the Windows executable path written by this script. The PowerShell verification checks the Windows server, not the app's WSL environment. See [OpenAI's Windows environment documentation](https://learn.chatgpt.com/docs/windows/windows-app#windows-subsystem-for-linux-wsl).
+
+Restart ChatGPT desktop, open **Settings → MCP servers**, and confirm `qspice` is enabled. Type `/mcp` in the composer to inspect connections, then use the smoke prompt in [AGENTS.md](../AGENTS.md). Verification starts the server using the saved command, arguments, and environment and checks the MCP handshake and tool discovery.
+
+See [OpenAI's MCP documentation](https://learn.chatgpt.com/docs/extend/mcp) for desktop support and shared configuration. Hosted Chat/Work chats can have different tool availability; check the connection in the intended desktop chat.
 
 ### Cursor — `%USERPROFILE%\.cursor\mcp.json`
 
