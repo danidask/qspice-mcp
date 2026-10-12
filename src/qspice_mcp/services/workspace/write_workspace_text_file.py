@@ -9,7 +9,7 @@ from qspice_mcp.core.exceptions import ValidationError
 from qspice_mcp.services._shared.paths import resolve_workspace_output_path
 from qspice_mcp.services.service_spec import ServiceSpec
 
-_ALLOWED_SUFFIXES = (".cpp", ".h", ".hpp", ".c", ".txt", ".cmake", ".md")
+_ALLOWED_SUFFIXES = (".cpp", ".h", ".hpp", ".c", ".txt", ".cmake", ".md", ".json")
 
 
 @dataclass(frozen=True, slots=True)
@@ -27,7 +27,7 @@ SERVICE_SPEC = ServiceSpec(
     title="Write Workspace Text File",
     summary=(
         "Write or overwrite one UTF-8 text file inside the workspace root "
-        "(for example a C-block `.cpp` source)."
+        "(for example a C-block `.cpp` source or `.json` layout specification)."
     ),
     phase="implemented",
     read_only=False,

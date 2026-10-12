@@ -890,7 +890,8 @@ MCP_CONTRACTS: dict[str, dict[str, object]] = {
         "title": "Apply Schematic Layout Spec",
         "description": (
             "Place schematic components in batch from a workspace JSON layout specification "
-            "using auto, grid, or absolute placement modes."
+            "using auto, grid, or absolute placement modes. "
+            "Saves once after every row succeeds; a rejected row leaves files unchanged."
         ),
         "input_schema": {
             "type": "object",

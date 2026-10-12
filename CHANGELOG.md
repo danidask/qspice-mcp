@@ -448,6 +448,14 @@ drive the QSpice circuit simulator through stable JSON tools.
 
 ### Fixed
 
+- **Layout authoring and inspection** — `write_workspace_text_file` accepts `.json`
+  layout specs and advertises its extension allowlist. The schematic editor handles
+  named references such as `Vpwm` and `Bgate`. Layout batches save once after all
+  rows succeed and retain every row when writing to an alternate output path.
+  Component listing recognizes the editor's `Value` field, and clean-room checking
+  retains behavioral expressions and values containing `=` rather than reporting
+  spurious `missing_value` warnings.
+
 - **`read_log` broken over MCP** — the service parameter was renamed `raw_path` →
   `log_path` (it takes a `.log` path, matching `list_measures`/`read_measures`), fixing
   a `Missing required tool argument` failure for every MCP `read_log` call; an

@@ -908,6 +908,8 @@ Expected outputs:
 
 Purpose:
 Write one UTF-8 text file under the workspace root (for example a C-block `.cpp`).
+Allowed extensions are `.cpp`, `.h`, `.hpp`, `.c`, `.txt`, `.cmake`, `.md`, and
+`.json`. Use `.json` to prepare a layout spec for `apply_schematic_layout_spec`.
 For C/C++ custom-device sources (`.c`, `.cpp`, `.cc`, `.cxx`), the handler can
 compile the sibling `.dll` in the same call via `build_dll_device`, and optionally
 cross-check the DLL block symbol when `schematic_path` and `dll_reference` are both
@@ -1225,6 +1227,11 @@ Notes:
 Call `describe_schematic_layout_spec` for the v1 schema and bundled
 `scratch_power_stage.v1.json` example. Layout spec v1 covers component coordinates
 only — add wires, junctions, and labels with dedicated tools afterward.
+References may use names such as `Vpwm`, `Bgate`, and `Cbus` as well as numeric
+designators. The batch is edited in memory and saved once after every row
+succeeds; a rejected row leaves the source and requested output file unchanged.
+When `output_path` is supplied, it receives the complete batch and the source
+remains unchanged.
 
 ## add_dll_block
 

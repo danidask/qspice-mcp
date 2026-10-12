@@ -94,6 +94,8 @@ def list_components(
             editor_component = editor.get_component(reference)
             attributes = dict(editor_component.attributes)
             value = attributes.get("value")
+            if value is None:
+                value = attributes.get("Value")
             description = attributes.get("description")
             components.append(
                 ComponentSummary(
