@@ -254,6 +254,8 @@ Both must exit 0. If they fail in a normal terminal, fix the venv/`QSPICE_EXE` s
 | --- | --- |
 | `QSPICE_EXE` missing | Set to `C:\Program Files\QSPICE\QSPICE64.exe`; re-run `--describe` |
 | Tools work but simulation fails | Check `QSPICE_EXE` and the `--workspace-root` folder in MCP config |
+| Inspecting an absolute `.qsch` path in another folder | `inspect_schematic` infers the root from the file's containing folder when `workspace_root` is omitted. An explicit root still bounds the path. Relative paths and other tools require the active root or an explicit override, such as `workspace_root="D:\repos\otros\sim_boost_converter"` with `schematic_path="circuits/boost_one_phase_open_loop.qsch"`. |
+| Replacing a net label conflicts with an old named wire | Use `rename_net` with `net_name="in"` and `new_net_name="vbus"`. This updates all matching labels and explicit wire names together. Label removal retains wire names; insertion rejects a conflicting named wire at its position. Review textual net references separately and inspect connectivity afterward. |
 | Paths with spaces | Quote values: `QSPICE_EXE="C:\Program Files\QSPICE\QSPICE64.exe"` |
 | `Invalid JSON` / stdio error | You typed a shell command into a terminal running `qspice-mcp`; use Ctrl+C and let the **client** spawn the server |
 | Missing DLL / C-block errors | [C-Block Build Guide](cblock_build_guide.md) |

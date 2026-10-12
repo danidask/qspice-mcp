@@ -23,6 +23,7 @@ from .shared import to_jsonable
 from .workspace import (
     _WorkspaceSettingsProxy,
     get_pending_workspace_root,
+    resolve_tool_workspace_override,
     resolve_workspace_override,
 )
 
@@ -64,6 +65,10 @@ class QSpiceToolRuntime:
             workspace_override = resolve_workspace_override(kwargs.pop("workspace_root", None))
             if workspace_override is None:
                 workspace_override = get_pending_workspace_root()
+            if workspace_override is None:
+                workspace_override = resolve_tool_workspace_override(
+                    tool.name, None, schematic_path=kwargs.get("schematic_path")
+                )
             original_settings = self.settings
             if workspace_override is not None:
                 self.settings = cast(

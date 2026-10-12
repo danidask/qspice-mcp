@@ -21,7 +21,12 @@ def resolve_workspace_path(raw_path: str | Path, *, workspace_root: Path) -> Pat
     resolved = candidate.resolve(strict=False)
     root = workspace_root.resolve(strict=False)
     if resolved != root and root not in resolved.parents:
-        raise SandboxViolationError(f"Path is outside workspace root: {resolved}")
+        raise SandboxViolationError(
+            f"Path is outside workspace root: {resolved}. "
+            f"Active workspace root: {root}. Absolute paths must also stay inside this root. "
+            "To access a different circuit folder, pass workspace_root explicitly "
+            "for that folder and use an absolute path or a path relative to it."
+        )
     return resolved
 
 
